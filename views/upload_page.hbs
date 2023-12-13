@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+        p {
+            text-align: center;
+        }
+
+        #file {
+            display: none;
+        }
+
+        label {
+            display: block;
+            width: 150px;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .image-preview img {
+            max-width: 200px;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload and Display Images</h1>
+        <p>*Upload Image(jpg,png) files only</p>
+
+        <!-- Form to upload multiple images -->
+        <form id="uploadForm" action="/image/upload" method="post" enctype="multipart/form-data">
+            <input type="file" accept="image/*" name="image" id="file" multiple>
+            <label for="file">Select Image</label>
+            <div class="image-preview" id="imagePreview"></div>
+            <input type="submit" value="Upload Images">
+        </form>
+
+        <script>
+            var loadFiles = function(event) {
+                var preview = document.getElementById('imagePreview');
+                preview.innerHTML = ''; // Clear previous preview
+
+                for (var i = 0; i < event.target.files.length; i++) {
+                    var image = document.createElement('img');
+                    image.src = URL.createObjectURL(event.target.files[i]);
+                    image.classList.add('preview-image');
+                    preview.appendChild(image);
+                }
+            };
+
+            document.getElementById('file').addEventListener('change', loadFiles);
+
+            
+        </script>
+    </div>
+</body>
+</html>
+
