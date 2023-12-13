@@ -5,12 +5,16 @@ const session = require("express-session");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const bcrypt = require("bcrypt");
+
+const saltrounds = 10;
 
 const app = express();
 const port = 3000;
 
 const username = "admin";
-const password = "admin";
+const passwordHash =
+  "$2b$10$I8szwFSMDn4kiGT0Hzyfueg1MkbioTQGsLh/.ytPmm6yqoP77M7US";
 let fileCount = 0;
 const domain =
   process.env.NODE_ENV === "dev"
@@ -76,11 +80,12 @@ const authenticate = (req, res, next) => {
   if (
     !req.session.user ||
     req.session.user.username !== username ||
-    req.session.user.password !== password
+    req.session.user.password !== passwordHash
   ) {
     res.redirect("/admin/login");
     return;
   }
+
   next();
 };
 
@@ -92,14 +97,18 @@ app.get("/admin/login", (req, res) => {
   res.render("login_page");
 });
 
-app.post("/admin/login", (req, res) => {
-  if (req.body.username !== username || req.body.password !== password) {
+app.post("/admin/login", async (req, res) => {
+  // const hashedPass = await bcrypt.hash(req.body.password, saltrounds);
+  const isMatched = await bcrypt.compare(req.body.password, passwordHash);
+  console.log("PASS HASH: ", isMatched);
+
+  if (req.body.username !== username || isMatched === false) {
     res.redirect("/admin/login");
     return;
   }
   req.session.user = {
     username: req.body.username,
-    password: req.body.password,
+    password: passwordHash,
   };
   res.redirect("/image/upload");
 });
