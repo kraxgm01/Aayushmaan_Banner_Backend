@@ -121,7 +121,7 @@ app.post(
   "/image/upload",
   authenticate,
   clearUploadsFolder,
-  upload.array("images", 5),
+  upload.any("images", 5),
   (req, res) => {
     console.log("Upload ho chuka hai");
     const files = req.files;
