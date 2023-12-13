@@ -66,15 +66,13 @@ const clearUploadsFolder = (req, res, next) => {
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory);
   }
-  fs.readdir(directory, (err, files) => {
-    if (err) return;
 
-    for (const file of files) {
-      fs.unlink(path.join(directory, file), (err) => {
-        if (err) return;
-      });
-    }
-  });
+  const files = fs.readdirSync(directory);
+
+  for (const file of files) {
+    fs.unlinkSync(path.join(directory, file));
+  }
+
   next();
 };
 
@@ -128,6 +126,7 @@ app.post(
   (req, res) => {
     console.log("Upload ho chuka hai");
     const files = req.files;
+    console.log(files.length);
     if (!files || files.length === 0) {
       res.status(400).send("No files were uploaded.");
     } else {
