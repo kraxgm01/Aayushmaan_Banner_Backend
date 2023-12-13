@@ -19,7 +19,7 @@ let fileCount = 0;
 const domain =
   process.env.NODE_ENV === "dev"
     ? "http://localhost:3000"
-    : "https://aayushmaanbanners.onRender.com";
+    : "https://aayushmaanbanners.onrender.com";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
