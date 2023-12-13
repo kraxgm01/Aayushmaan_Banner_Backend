@@ -138,9 +138,13 @@ app.post(
 app.get("/banners", (req, res) => {
   const directory = "uploads";
   fs.readdir(directory, (err, files) => {
-    if (err) return;
-
     const fileUrls = [];
+
+    if (err)
+      res.status(200).json({
+        banners: fileUrls,
+      });
+
     for (const file of files) {
       fileUrls.push(domain + "/banners/" + file);
     }
