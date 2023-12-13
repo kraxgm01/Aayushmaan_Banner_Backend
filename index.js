@@ -63,6 +63,9 @@ const upload = multer({ storage: storage });
 const clearUploadsFolder = (req, res, next) => {
   const directory = "uploads";
   fileCount = 0;
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
   fs.readdir(directory, (err, files) => {
     if (err) return;
 
