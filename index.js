@@ -13,7 +13,7 @@ const username = "admin";
 const password = "admin";
 let fileCount = 0;
 const domain =
-  process.env.NODE_ENV != "development"
+  process.env.NODE_ENV === "dev"
     ? "http://localhost:3000"
     : "https://aayushmaanbanners.onRender.com";
 
