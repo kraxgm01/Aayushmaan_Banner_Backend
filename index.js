@@ -51,17 +51,15 @@ const clearUploadsFolder = (req, res, next) => {
     fileCount = 0;
     if (!fs.existsSync(directory)) {
         fs.mkdirSync(directory);
-    }
-    fs.readdir(directory, (err, files) => {
-        if (err) return;
+    } else {
+        const files = fs.readdirSync(directory);
         for (const file of files) {
-            fs.unlink(path.join(directory, file), err => {
-                if (err) return;
-            });
+            fs.unlinkSync(path.join(directory, file));
         }
-    });
+    }
     next();
 };
+
 
 // Middleware for authentication
 const authenticate = (req, res, next) => {
@@ -102,9 +100,9 @@ app.get("/image/upload", authenticate, (req, res) => {
 
 app.post("/image/upload", authenticate, clearUploadsFolder, upload.any("images", 5), (req, res) => {
     const files = req.files;
-    res.render("upload_page", {
-        files: files,
-    });
+    // res.render("upload_page", {
+    //     files: files,
+    // });
     if (!files || files.length === 0) {
       res.status(400).send("No files were uploaded.");
     } else {
