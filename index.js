@@ -17,7 +17,7 @@ let fileCount = 0;
 const domain =
   process.env.NODE_ENV === "dev"
     ? "http://localhost:3000"
-    : "http://ec2-13-201-81-22.ap-south-1.compute.amazonaws.com:3000/";
+    : "http://ec2-13-201-81-22.ap-south-1.compute.amazonaws.com:3000";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('GLUEY')); // Secret for signed cookies
