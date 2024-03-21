@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Links</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            margin: 5px 0;
+            padding: 8px;
+            width: 200px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Links</h1>
+    <form action="/add-links" method="POST">
+    {{#each numberOfFields}}
+    <input type="text" name="link{{@index}}" placeholder="Enter Link {{@index}}">
+    {{/each}}
+    <input type="hidden" name="linkCount" value="{{numberOfFields.length}}">
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>

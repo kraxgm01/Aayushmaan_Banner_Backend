@@ -13,7 +13,10 @@ const port = 3000;
 
 const username = "admin";
 const passwordHash = "$2b$10$I8szwFSMDn4kiGT0Hzyfueg1MkbioTQGsLh/.ytPmm6yqoP77M7US"; // Example hash
+
+const LINKS_FILE_PATH = 'links.txt';
 let fileCount = 0;
+let fileUrls = [];
 const domain =
   process.env.NODE_ENV === "dev"
     ? "http://localhost:3000"
@@ -98,6 +101,8 @@ app.get("/image/upload", authenticate, (req, res) => {
     res.render("upload_page");
 });
 
+
+
 app.post("/image/upload", authenticate, clearUploadsFolder, upload.any("images", 5), (req, res) => {
     const files = req.files;
     // res.render("upload_page", {
@@ -106,23 +111,72 @@ app.post("/image/upload", authenticate, clearUploadsFolder, upload.any("images",
     if (!files || files.length === 0) {
       res.status(400).send("No files were uploaded.");
     } else {
-      res.status(201).send("Files uploaded successfully.");
+      res.redirect("/add-links");
     }
+});
+
+app.get("/add-links", authenticate, (req, res) => {
+    const numberOfFields = Array(fileCount).fill().map((_, index) => index);
+    res.render("add_links_page", { numberOfFields });
+});
+
+app.post("/add-links", authenticate, (req, res) => {
+    const linkCount = fileCount;
+    const writeStream = fs.createWriteStream(LINKS_FILE_PATH, { flags: 'a' });
+
+    for (let i = 0; i < linkCount; i++) {
+        const link = req.body[`link${i}`];
+        if (link) {
+            writeStream.write(`${link}\n`);
+        }
+    }
+
+    writeStream.end();
+
+    writeStream.on('finish', () => {
+        res.status(200).send("Successfully added Images and Links"); // Redirect or show a success message.
+    });
+
+    writeStream.on('error', (err) => {
+        res.status(500).send("Error writing to file");
+    });
 });
 
 app.get("/banners", (req, res) => {
     const directory = "uploads";
-    fs.readdir(directory, (err, files) => {
-        if (err) return;
-        const fileUrls = [];
-        for (const file of files) {
-            fileUrls.push(domain + "/banners/" + file);
+    const LINKS_FILE_PATH = 'links.txt';
+    
+    // Reading the directory for image files
+    fs.readdir(directory, (dirErr, files) => {
+        if (dirErr) {
+            res.status(500).send("Error reading directory");
+            return;
         }
-        res.status(200).json({
-            banners: fileUrls,
+
+        // Reading the text file for URLs
+        fs.readFile(LINKS_FILE_PATH, 'utf8', (fileErr, data) => {
+            if (fileErr) {
+                res.status(500).send("Error reading links file");
+                return;
+            }
+
+            // Splitting text file content into an array of URLs
+            const urls = data.trim().split('\n');
+
+            // Associating each image with its corresponding URL
+            // Ensuring that the number of URLs and images matches is crucial
+            const banners = files.map((file, index) => {
+                return {
+                    imageUrl: `${domain}/banners/${file}`,
+                    link: urls.length > index ? urls[index] : null
+                };
+            });
+
+            res.status(200).json({ banners });
         });
     });
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
