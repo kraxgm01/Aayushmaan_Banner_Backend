@@ -122,7 +122,7 @@ app.get("/add-links", authenticate, (req, res) => {
 
 app.post("/add-links", authenticate, (req, res) => {
     const linkCount = fileCount;
-    const writeStream = fs.createWriteStream(LINKS_FILE_PATH, { flags: 'a' });
+    const writeStream = fs.createWriteStream(LINKS_FILE_PATH, { flags: 'w' });
 
     for (let i = 0; i < linkCount; i++) {
         const link = req.body[`link${i}`];
